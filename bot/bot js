@@ -1,0 +1,23 @@
+import os
+import telebot
+
+# Получаем токен из переменных окружения
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+
+if not TELEGRAM_TOKEN:
+    raise Exception("Не задан TELEGRAM_TOKEN в переменных окружения")
+
+bot = telebot.TeleBot(TELEGRAM_TOKEN)
+
+@bot.message_handler(commands=['start', 'help'])
+def send_welcome(message):
+    bot.reply_to(message, "Привет! Это бот для TLive-стрима.\nНапиши любое сообщение — оно появится на сайте (эмуляция).")
+
+@bot.message_handler(func=lambda message: True)
+def echo_message(message):
+    # Здесь можно добавить логику отправки сообщения на сайт через API
+    bot.reply_to(message, f"Ваше сообщение: {message.text}")
+
+if __name__ == "__main__":
+    print("Бот запущен. Для остановки нажмите Ctrl+C.")
+    bot.infinity_polling()
